@@ -175,9 +175,7 @@ MS VC compiler pragmas
 /*#define COMPILE_ADD_NON_ANSI_FUNCTIONS */
 #endif
 
-/*
 #define COMPILE_ALL_CPP 1
-*/
 
 #ifdef _MSC_VER
 /*
