@@ -6,7 +6,7 @@ set( rinchi_includes
     ${CMAKE_CURRENT_SOURCE_DIR}/writers
 )
 
-add_library( RInchi OBJECT
+add_library( RInChi_objects OBJECT
     lib/rinchi_utils.cpp
     lib/rinchi_hashing.cpp
     lib/rinchi_logger.cpp
@@ -25,17 +25,33 @@ add_library( RInchi OBJECT
     rinchi_lib/rinchi_lib.cpp
 )
 
-target_include_directories( RInchi PRIVATE ${rinchi_includes})
+target_include_directories( RInChi_objects PRIVATE ${rinchi_includes})
 
 if (${RINCHI_TESTING})
-    target_compile_definitions(RInchi PRIVATE IN_RINCHI_TEST_SUITE=1)
+    target_compile_definitions(RInChi_objects PRIVATE IN_RINCHI_TEST_SUITE=1)
 endif()
 
-add_executable( rinchi_cmdline apps/rinchi_cmdline.cpp $<TARGET_OBJECTS:Inchi> $<TARGET_OBJECTS:RInchi>)
-target_include_directories( rinchi_cmdline PRIVATE ${rinchi_includes})
+add_executable( rinchi_cmdline
+    apps/rinchi_cmdline.cpp
+    $<TARGET_OBJECTS:InChi_objects>
+    $<TARGET_OBJECTS:RInChi_objects>
+)
 
-add_executable( rxn_from_molfiles apps/rxn_from_molfiles.cpp $<TARGET_OBJECTS:Inchi> $<TARGET_OBJECTS:RInchi>)
-target_include_directories( rxn_from_molfiles PRIVATE ${rinchi_includes})
+target_include_directories( rinchi_cmdline
+    PRIVATE
+    ${rinchi_includes}
+)
+
+add_executable( rxn_from_molfiles
+    apps/rxn_from_molfiles.cpp
+    $<TARGET_OBJECTS:InChi_objects>
+    $<TARGET_OBJECTS:RInChi_objects>
+)
+
+target_include_directories( rxn_from_molfiles
+    PRIVATE
+    ${rinchi_includes}
+)
 
 if (${RINCHI_TESTING})
     add_test(NAME example_test
