@@ -11,6 +11,12 @@ add_executable( rinchi_test_suite
     $<TARGET_OBJECTS:RInChi_objects>
 )
 
+execute_process(
+    COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_SOURCE_DIR}/test.tar.gz
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+
 target_compile_definitions( rinchi_test_suite
     PRIVATE IN_RINCHI_TEST_SUITE=1
 )
@@ -23,7 +29,8 @@ target_link_libraries( rinchi_test_suite
     Boost::filesystem
 )
 
-add_test(NAME rinichi_test_suite
+add_test(
+    NAME rinichi_test_suite
     COMMAND ${CMAKE_CURRENT_BINARY_DIR}/rinchi_test_suite
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
