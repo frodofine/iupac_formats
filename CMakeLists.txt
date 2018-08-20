@@ -1,7 +1,8 @@
 project(iupac_types)
 cmake_minimum_required(VERSION 3.5)
 
-option(RINCHI_TESTING "Build tests" ON)
+option(INCHI_TESTING "Build InChi tests" ON)
+option(RINCHI_TESTING "Build RInChi tests" ON)
 
 if (${RINCHI_TESTING})
     find_package( Boost COMPONENTS filesystem system)
