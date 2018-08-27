@@ -77,9 +77,12 @@ add_executable(inchi-1
 
 target_include_directories(inchi-1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 target_compile_definitions(inchi-1 PUBLIC TARGET_EXE_STANDALONE COMPILE_ANSI_ONLY)
-target_link_libraries(inchi-1 m)
 
-if ((${INCHI_BUILD_SHARED} OR ${INCHI_DEMOS}))
+if (NOT MSVC)
+    target_link_libraries(inchi-1 m)
+endif()
+
+if (${INCHI_BUILD_SHARED} OR (${INCHI_DEMOS} OR ${RINCHI_TESTING}))
     add_library(inchi SHARED
         ${InChi_base}
         ${InChi_api}
@@ -95,7 +98,7 @@ if (${INCHI_DEMOS})
         INCHI_API/demos/mol2inchi/moreutil.c
     )
 
-    target_link_libraries(mol2inchi inchi m)
+    target_link_libraries(mol2inchi inchi)
     target_compile_definitions(mol2inchi PUBLIC BUILD_LINK_AS_DLL TARGET_EXE_USING_API)
     target_include_directories(mol2inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 

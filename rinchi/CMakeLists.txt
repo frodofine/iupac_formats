@@ -12,7 +12,6 @@ add_library( RInChi_objects OBJECT
     lib/rinchi_logger.cpp
     lib/inchi_api_intf.cpp
     lib/inchi_generator.cpp
-    lib/unit_test.cpp
     parsers/mdl_molfile.cpp
     parsers/mdl_molfile_reader.cpp
     parsers/mdl_rxnfile_reader.cpp

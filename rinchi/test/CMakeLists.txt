@@ -7,6 +7,7 @@ add_executable( rinchi_test_suite
     test_suite/tests/rinchi_reader_tests.cpp
     test_suite/tests/rxnfile_tests.cpp
     test_suite/tests/special_atoms_tests.cpp
+    ../lib/unit_test.cpp
     $<TARGET_OBJECTS:InChi_objects>
     $<TARGET_OBJECTS:RInChi_objects>
 )
@@ -27,6 +28,7 @@ target_include_directories( rinchi_test_suite
 
 target_link_libraries( rinchi_test_suite
     Boost::filesystem
+    Boost::dynamic_linking
 )
 
 add_test(
