@@ -63,7 +63,7 @@
 #include "inchi_api.h"
 #include "readinch.h"
 #ifdef TARGET_LIB_FOR_WINCHI
-#include "../../../IChI_lib/src/ichi_lib.h"
+#include "ichi_lib.h"
 #include "inchi_api.h"
 #else
 #include "inchi_gui.h"

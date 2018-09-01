@@ -1,4 +1,4 @@
- set(InChi_base
+ set(InChI_base
     INCHI_BASE/ichi_bns.c
     INCHI_BASE/ichi_io.c
     INCHI_BASE/ichican2.c
@@ -46,7 +46,7 @@
     INCHI_BASE/util.c
  )
 
-set(InChi_api
+set(InChI_api
     INCHI_API/libinchi/src/ichilnct.c
     INCHI_API/libinchi/src/inchi_dll.c
     INCHI_API/libinchi/src/inchi_dll_a.c
@@ -61,34 +61,54 @@ set(InChi_api
     INCHI_API/libinchi/ixa/ixa_status.c
 )
 
-add_library(InChi_objects OBJECT
-    ${InChi_base}
-    ${InChi_api}
+add_library(InChI_objects OBJECT
+    ${InChI_base}
+    ${InChI_api}
 )
 
-target_include_directories(InChi_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
-target_compile_definitions(InChi_objects PUBLIC TARGET_API_LIB)
+target_include_directories(InChI_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
+target_compile_definitions(InChI_objects PUBLIC TARGET_API_LIB)
 
-add_executable(inchi-1
-    ${InChi_base}
-    INCHI_EXE/dispstru.c
-    INCHI_EXE/ichimain.c
-)
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set_target_properties(InChi_objects PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses")
+endif()
 
-target_include_directories(inchi-1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
-target_compile_definitions(inchi-1 PUBLIC TARGET_EXE_STANDALONE COMPILE_ANSI_ONLY)
+if (${INCHI_BUILD_EXE} OR ${INCHI_TESTING})
 
-if (NOT MSVC)
-    target_link_libraries(inchi-1 m)
+    add_executable(inchi-1
+        ${InChI_base}
+        INCHI_EXE/dispstru.c
+        INCHI_EXE/ichimain.c
+    )
+
+    target_include_directories(inchi-1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
+    target_compile_definitions(inchi-1 PUBLIC TARGET_EXE_STANDALONE COMPILE_ANSI_ONLY)
+
+    if (NOT MSVC)
+        target_link_libraries(inchi-1 m)
+    endif()
+
+    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        set_target_properties(inchi-1 PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses")
+    endif()
 endif()
 
 if (${INCHI_BUILD_SHARED} OR (${INCHI_DEMOS} OR ${RINCHI_TESTING}))
-    add_library(inchi SHARED
-        ${InChi_base}
-        ${InChi_api}
-    )
 
-    target_compile_definitions(inchi PUBLIC TARGET_API_LIB)
+    if (MSVC)
+        add_library(inchi SHARED
+            ${InChI_base}
+            ${InChI_api}
+           INCHI_API/libinchi/libinchi.def
+        )
+    else()
+        add_library(inchi SHARED
+            ${InChI_base}
+            ${InChI_api}
+        )
+    endif()
+    target_compile_definitions(inchi PUBLIC BUILD_LINK_AS_DLL TARGET_API_LIB)
+    target_compile_definitions(inchi PRIVATE _USRDLL)
     target_include_directories(inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 endif()
 
@@ -99,31 +119,20 @@ if (${INCHI_DEMOS})
     )
 
     target_link_libraries(mol2inchi inchi)
-    target_compile_definitions(mol2inchi PUBLIC BUILD_LINK_AS_DLL TARGET_EXE_USING_API)
+    target_compile_definitions(mol2inchi PUBLIC TARGET_EXE_USING_API)
     target_include_directories(mol2inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 
-    #add_executable(inchi_main
-    #    INCHI_API/demos/inchi_main/e_0dstereo.c
-    #    INCHI_API/demos/inchi_main/e_ichimain.c
-    #    INCHI_API/demos/inchi_main/e_ichi_io.c
-    #    INCHI_API/demos/inchi_main/e_ichi_parms.c
-    #    INCHI_API/demos/inchi_main/e_inchi_atom.c
-    #    INCHI_API/demos/inchi_main/e_mol2atom.c
-    #    INCHI_API/demos/inchi_main/e_readinch.c
-    #    INCHI_API/demos/inchi_main/e_readmol.c
-    #    INCHI_API/demos/inchi_main/e_readstru.c
-    #    INCHI_API/demos/inchi_main/e_util.c
-    #    INCHI_API/demos/inchi_main/e_ichimain_a.c
-    #)
+    add_executable(test_ixa
+        INCHI_API/demos/test_ixa/test_ixa.c
+        INCHI_API/demos/test_ixa/moreutil.c
+    )
 
-    #target_link_libraries(inchi_main inchi m)
-    #target_compile_definitions(inchi_main PUBLIC BUILD_LINK_AS_DLL TARGET_EXE_USING_API)
-    #target_include_directories(inchi_main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
-endif()
-
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set_target_properties(InChi_objects PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses")
-    set_target_properties(inchi-1 PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses")
+    target_link_libraries(test_ixa inchi)
+    if (NOT MSVC)
+        target_link_libraries(test_ixa inchi m)
+    endif()
+    target_compile_definitions(test_ixa PUBLIC TARGET_EXE_USING_API)
+    target_include_directories(test_ixa PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 endif()
 
 if (${INCHI_TESTING})

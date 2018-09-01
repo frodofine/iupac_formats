@@ -60,7 +60,7 @@
 #include "ichimain.h"
 #include "extr_ct.h"
 #ifdef TARGET_LIB_FOR_WINCHI
-#include "../../../IChI_lib/src/ichi_lib.h"
+#include "ichi_lib.h"
 #endif
 #include "ichicomp.h"
 

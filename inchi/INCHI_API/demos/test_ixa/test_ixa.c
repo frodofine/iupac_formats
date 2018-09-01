@@ -42,7 +42,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../../../INCHI_BASE/src/inchi_api.h"
+#include "inchi_api.h"
 #include "test_ixa.h"
 #include "moreitil.h"
 
