@@ -52,7 +52,9 @@
 
 #include <time.h>
 
+#ifndef __APPLE__
 #include <omp.h>
+#endif
 
 #include "inchi_api.h"
 #include "mol2inchi.h"
