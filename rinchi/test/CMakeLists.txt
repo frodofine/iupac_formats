@@ -8,8 +8,8 @@ add_executable( rinchi_test_suite
     test_suite/tests/rxnfile_tests.cpp
     test_suite/tests/special_atoms_tests.cpp
     ../lib/unit_test.cpp
-    $<TARGET_OBJECTS:InChi_objects>
-    $<TARGET_OBJECTS:RInChi_objects>
+    $<TARGET_OBJECTS:InChI_objects>
+    $<TARGET_OBJECTS:RInChI_objects>
 )
 
 execute_process(
