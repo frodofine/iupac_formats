@@ -14,7 +14,7 @@ if [[ "$EMSCRIPTEN" == "ON" ]]; then
     source ./emscripten-sdk-master/emsdk_env.sh
 
     export CMAKE_CONFIGURE='emcmake'
-    export CMAKE_ARGS="-DINCHI_TESTING=ON -DRINCHI_TESTING=ON -DTEST_RUNNER=node -DCMAKE_BUILD_TYPE=Release"
+    export CMAKE_ARGS="-DINCHI_TESTING=ON -DTEST_RUNNER=node -DCMAKE_BUILD_TYPE=Release"
 
     # Install a modern cmake
     cd $HOME

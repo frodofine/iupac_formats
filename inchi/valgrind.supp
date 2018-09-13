@@ -1,0 +1,13 @@
+{
+   <Read is actually correct>
+   Memcheck:Addr1
+   fun:MarkSaltChargeGroups2
+   fun:mark_alt_bonds_and_taut_groups
+   fun:Create_INChI
+   fun:CreateOneComponentINChI
+   fun:CreateOneStructureINChI
+   fun:ProcessOneStructure
+   fun:ProcessOneStructureEx
+   fun:ProcessSingleInputFile
+   fun:main
+}

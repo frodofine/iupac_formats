@@ -7,6 +7,7 @@ if(${TEST_RUNNER} STREQUAL "valgrind")
     set(
         RUNNER_COMMAND
         "valgrind" "--leak-check=full" "--dsymutil=yes" "--error-exitcode=125"
+        "--suppressions=${CMAKE_CURRENT_SOURCE_DIR}/valgrind.supp"
     )
 elseif(${TEST_RUNNER} STREQUAL "wine")
     set(RUNNER_COMMAND "wine")

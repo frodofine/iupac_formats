@@ -55,12 +55,8 @@ before_install:
   - $CXX --version
 
 script:
-  - export CC=${COMPILER_C}
-  - export CXX=${COMPILER_CXX}
-  - ${CC} --version
-  - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. $CMAKE_ARGS
+  - $CMAKE_CONFIGURE cmake .. $CMAKE_ARGS
   - make -j2
   - ctest -j2 --output-on-failure
