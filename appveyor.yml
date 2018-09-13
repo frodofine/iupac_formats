@@ -1,0 +1,37 @@
+version: "{build}"
+os: Visual Studio 2015
+
+branches:
+  only:
+    - master
+
+environment:
+  BOOST_ROOT: C:\Libraries\boost_1_67_0
+  BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14.0
+  matrix:
+    - generator: Visual Studio 14 2015 Win64
+      ARCH: x64
+    - generator: Visual Studio 14 2015
+      ARCH: x86
+
+clone_depth: 10
+clone_folder: c:\iupac
+
+# Uncomment the following lines to enable remote desktop access to Appveyor
+# after a failed build.
+
+# init:
+#   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+# on_failure:
+#   - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+build_script:
+  - cd C:\iupac
+  - ls C:\Libraries\boost_1_67_0
+  - mkdir build
+  - cd build
+  - cmake .. -DINCHI_BUILD_SHARED=ON -DINCHI_BUILD_EXE=ON -DINCHI_DEMOS=ON -DINCHI_TESTING=ON -DRINCHI_TESTING=ON
+  - cmake --build . --config Release
+
+test_script:
+  - ctest --build-config Release --timeout 300 --output-on-failure
