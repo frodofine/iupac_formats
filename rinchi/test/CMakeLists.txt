@@ -1,3 +1,22 @@
+if(${TEST_RUNNER} STREQUAL "valgrind")
+    set(
+        RUNNER_COMMAND
+        "valgrind" "--leak-check=full" "--dsymutil=yes" "--error-exitcode=125"
+    )
+elseif(${TEST_RUNNER} STREQUAL "wine")
+    set(RUNNER_COMMAND "wine")
+elseif(${TEST_RUNNER} STREQUAL "node")
+    message(STATUS "Cannot run RInChI tests on Node")
+    return()
+else()
+    set(RUNNER_COMMAND "")
+endif()
+
+add_test(NAME example_test
+    COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/../rxn_from_molfiles
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../apps/data
+)
+
 add_executable( rinchi_test_suite
     test_suite/rinchi_test_suite.cpp
     test_suite/tests/Cambridge_data_tests.cpp
@@ -17,7 +36,6 @@ execute_process(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-
 target_compile_definitions( rinchi_test_suite
     PRIVATE IN_RINCHI_TEST_SUITE=1
 )
@@ -33,6 +51,6 @@ target_link_libraries( rinchi_test_suite
 
 add_test(
     NAME rinichi_test_suite
-    COMMAND ${CMAKE_CURRENT_BINARY_DIR}/rinchi_test_suite
+    COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/rinchi_test_suite
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
