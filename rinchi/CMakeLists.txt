@@ -53,10 +53,6 @@ target_include_directories( rxn_from_molfiles
 )
 
 if (${RINCHI_TESTING})
-    add_test(NAME example_test
-        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/rxn_from_molfiles
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/apps/data
-    )
-
+    enable_testing()
     add_subdirectory(test)
 endif()

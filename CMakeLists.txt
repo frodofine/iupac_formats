@@ -8,6 +8,8 @@ option(INCHI_TESTING "Build InChI tests" OFF)
 
 option(RINCHI_TESTING "Build RInChI tests" OFF)
 
+option(TEST_RUNNER "Run the tests with a debugging utility" "None")
+
 if (${RINCHI_TESTING})
     find_package( Boost COMPONENTS filesystem system REQUIRED)
     enable_testing()

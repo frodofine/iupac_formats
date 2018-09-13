@@ -1,10 +1,6 @@
 language: cpp
 sudo: false
 
-branches:
-  only:
-    - master
-
 linux64_addons:
     addons: &linux64
       apt:
@@ -15,6 +11,7 @@ linux64_addons:
         - gcc-5
         - libboost-dev
         - libboost-filesystem1.54-dev
+        - valgrind
 
 matrix:
   fast_finish: true
@@ -27,6 +24,21 @@ matrix:
       compiler: clang
       addons: *linux64
       env: COMPILER_C=clang COMPILER_CXX=clang++
+    - os: linux
+      compiler: gcc
+      env: VALGRIND=ON
+      addons: *linux64
+    - os: linux
+      compiler: gcc
+      env: USE_ICC=ON
+      addons: *linux64
+    - os: linux
+      compiler: gcc
+      env: USE_PGI=ON
+      addons: *linux64
+    - os: linux
+      env: EMSCRIPTEN=ON
+      addons: *linux64
     - os: osx
       compiler: clang
       osx_image: xcode7.3
@@ -35,7 +47,13 @@ matrix:
       compiler: gcc
       osx_image: xcode7.3
       env: COMPILER_C=gcc COMPILER_CXX=g++
-  
+
+before_install:
+  - cd $TRAVIS_BUILD_DIR
+  - source ci/travis_setup.sh
+  - $CC --version
+  - $CXX --version
+
 script:
   - export CC=${COMPILER_C}
   - export CXX=${COMPILER_CXX}
@@ -43,6 +61,6 @@ script:
   - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. -DINCHI_BUILD_SHARED=ON -DINCHI_BUILD_EXE=ON -DINCHI_DEMOS=ON -DINCHI_TESTING=ON -DRINCHI_TESTING=ON
+  - cmake .. $CMAKE_ARGS
   - make -j2
   - ctest -j2 --output-on-failure
