@@ -1,18 +1,15 @@
 version: "{build}"
 os: Visual Studio 2015
 
-branches:
-  only:
-    - master
-
 environment:
   BOOST_ROOT: C:\Libraries\boost_1_67_0
-  BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14.0
   matrix:
     - generator: Visual Studio 14 2015 Win64
       ARCH: x64
+      BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib64-msvc-14.0
     - generator: Visual Studio 14 2015
       ARCH: x86
+      BOOST_LIBRARYDIR: C:\Libraries\boost_1_67_0\lib32-msvc-14.0
 
 clone_depth: 10
 clone_folder: c:\iupac

@@ -12,6 +12,12 @@ else()
     set(RUNNER_COMMAND "")
 endif()
 
+if (${RINCHI_TESTING})
+    set(Boost_USE_STATIC_LIBS ON)
+    find_package( Boost COMPONENTS filesystem system REQUIRED)
+    enable_testing()
+endif()
+
 add_test(NAME example_test
     COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/../rxn_from_molfiles
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../apps/data
@@ -46,7 +52,6 @@ target_include_directories( rinchi_test_suite
 
 target_link_libraries( rinchi_test_suite
     Boost::filesystem
-    Boost::dynamic_linking
 )
 
 add_test(

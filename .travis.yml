@@ -13,6 +13,8 @@ linux64_addons:
         - libboost-filesystem1.54-dev
         - valgrind
 
+env:
+
 matrix:
   fast_finish: true
   include:
@@ -43,10 +45,9 @@ matrix:
       compiler: clang
       osx_image: xcode7.3
       env: COMPILER_C=clang COMPILER_CXX=clang++
-    - os: osx
-      compiler: gcc
-      osx_image: xcode7.3
-      env: COMPILER_C=gcc COMPILER_CXX=g++
+  allow_failures:
+    - env: USE_ICC=ON
+    - env: USE_PGI=ON
 
 before_install:
   - cd $TRAVIS_BUILD_DIR
