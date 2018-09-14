@@ -7,13 +7,9 @@ linux64_addons:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - g++-5
-        - gcc-5
         - libboost-dev
         - libboost-filesystem1.54-dev
         - valgrind
-
-env:
 
 matrix:
   fast_finish: true
@@ -21,7 +17,7 @@ matrix:
     - os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5
+      env: COMPILER_C=gcc COMPILER_CXX=g++
     - os: linux
       compiler: clang
       addons: *linux64

@@ -138,6 +138,5 @@ if (${INCHI_DEMOS})
 endif()
 
 if (${INCHI_TESTING})
-    enable_testing()
     include(${CMAKE_CURRENT_SOURCE_DIR}/InChITests.cmake)
 endif()

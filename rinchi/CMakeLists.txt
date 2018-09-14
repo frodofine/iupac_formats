@@ -53,6 +53,5 @@ target_include_directories( rxn_from_molfiles
 )
 
 if (${RINCHI_TESTING})
-    enable_testing()
     add_subdirectory(test)
 endif()

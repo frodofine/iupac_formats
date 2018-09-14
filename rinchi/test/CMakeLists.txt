@@ -15,7 +15,6 @@ endif()
 
 set(Boost_USE_STATIC_LIBS ON)
 find_package( Boost COMPONENTS filesystem system REQUIRED)
-enable_testing()
 
 add_test(NAME example_test
     COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/../rxn_from_molfiles

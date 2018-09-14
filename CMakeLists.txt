@@ -10,5 +10,9 @@ option(RINCHI_TESTING "Build RInChI tests" OFF)
 
 option(TEST_RUNNER "Run the tests with a debugging utility" "None")
 
+if (${INCHI_TESTING} OR ${RINCHI_TESTING})
+    enable_testing()
+endif()
+
 add_subdirectory(inchi)
 add_subdirectory(rinchi)
