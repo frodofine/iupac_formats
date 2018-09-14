@@ -57,7 +57,3 @@ script:
   - $CMAKE_CONFIGURE cmake .. $CMAKE_ARGS
   - make -j2
   - ctest -j2 --output-on-failure
-
-  after_script:
-  # cleanup intel compiler install
-- '[[ ! -z "${INTEL_INSTALL_PATH}" ]] && uninstall_intel_software'
