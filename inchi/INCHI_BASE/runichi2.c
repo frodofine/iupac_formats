@@ -479,8 +479,8 @@ int ReadTheStructure( struct tagINCHI_CLOCK *ic,
             {
                 InpAtomFlags = FLAG_INP_AT_NONCHIRAL; /* forced by the user */
             }
-
-            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags && FLAG_INP_AT_NONCHIRAL) )
+            /* JAF FLAG_INP_AT_NONCHIRAL is always true (a constant)       |---- && Typo?   */
+            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags & FLAG_INP_AT_NONCHIRAL) )
             {
                 InpAtomFlags &= ~FLAG_INP_AT_NONCHIRAL;
             }
@@ -608,7 +608,8 @@ int ReadTheStructure( struct tagINCHI_CLOCK *ic,
             {
                 InpAtomFlags = FLAG_INP_AT_NONCHIRAL; /* forced by the user */
             }
-            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags && FLAG_INP_AT_NONCHIRAL) )
+            /* JAF FLAG_INP_AT_NONCHIRAL is always true                    |----- && Typo? */
+            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags & FLAG_INP_AT_NONCHIRAL) )
             {
                 InpAtomFlags &= ~FLAG_INP_AT_NONCHIRAL;
             }

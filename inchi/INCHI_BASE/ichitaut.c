@@ -3577,7 +3577,8 @@ int MarkTautomerGroups( CANON_GLOBALS *pCG, inp_ATOM *at, int num_atoms, T_GROUP
         AT_RANK *nDfsPathPos = (AT_RANK  *)inchi_calloc( num_atoms, sizeof(nDfsPathPos[0]) );
         DFS_PATH DfsPath[MAX_ALT_PATH_LEN];
         int      ret;
-        if ( !nDfsPathPos || !DfsPath ) {
+        /* DfsPath will always be true because it is an array */
+        if ( !nDfsPathPos ) {
             tot_changes = CT_OUT_OF_RAM;  /*   <BRKPT> */
             goto free_memory;
         }
