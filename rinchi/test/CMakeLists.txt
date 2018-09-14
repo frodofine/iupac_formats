@@ -2,6 +2,7 @@ if(${TEST_RUNNER} STREQUAL "valgrind")
     set(
         RUNNER_COMMAND
         "valgrind" "--leak-check=full" "--dsymutil=yes" "--error-exitcode=125"
+        "--suppressions=${CMAKE_CURRENT_SOURCE_DIR}/valgrind.supp"
     )
 elseif(${TEST_RUNNER} STREQUAL "wine")
     set(RUNNER_COMMAND "wine")
@@ -12,11 +13,9 @@ else()
     set(RUNNER_COMMAND "")
 endif()
 
-if (${RINCHI_TESTING})
-    set(Boost_USE_STATIC_LIBS ON)
-    find_package( Boost COMPONENTS filesystem system REQUIRED)
-    enable_testing()
-endif()
+set(Boost_USE_STATIC_LIBS ON)
+find_package( Boost COMPONENTS filesystem system REQUIRED)
+enable_testing()
 
 add_test(NAME example_test
     COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/../rxn_from_molfiles
@@ -55,7 +54,7 @@ target_link_libraries( rinchi_test_suite
 )
 
 add_test(
-    NAME rinichi_test_suite
+    NAME rinchi_test_suite
     COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/rinchi_test_suite
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
