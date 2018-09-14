@@ -1254,14 +1254,15 @@ void FreeAllINChIArrays( PINChI2 *pINChI[INCHI_NUM],
 
         num_components[k] = 0;
 
-        if ( nk &&                /* added check for nk: 2013-12-15 IPl */
+        /* checking for nk == 0 causes a memory leak for RInChI - JAF 2018 */
+        if ( /*nk &&   added check for nk: 2013-12-15 IPl Removed by JAF 2018*/
              pINChI[k] )
         {
             inchi_free( pINChI[k] );
             pINChI[k] = NULL;
         }
 
-        if ( nk &&                /* added check for nk: 2013-12-15 IPl */
+        if ( /*nk &&  added check for nk: 2013-12-15 IPl Removed by JAF 2018*/
              pINChI_Aux[k] )
         {
             inchi_free( pINChI_Aux[k] );

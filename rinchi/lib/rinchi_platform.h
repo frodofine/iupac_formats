@@ -71,6 +71,9 @@
 	// #define ON_APPLE
 	#define ON_LINUX
 	const char DIR_SEPARATOR = '/';
+#elif defined(__EMSCRIPTEN__)
+	#define ON_LINUX
+	const char DIR_SEPARATOR = '/';
 #else
 	#error "unsupported platform"
 #endif

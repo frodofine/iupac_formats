@@ -1,18 +1,12 @@
 language: cpp
 sudo: false
 
-branches:
-  only:
-    - master
-
 linux64_addons:
     addons: &linux64
       apt:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - g++-5
-        - gcc-5
         - libboost-dev
         - libboost-filesystem1.54-dev
         - valgrind
@@ -23,7 +17,7 @@ matrix:
     - os: linux
       compiler: gcc
       addons: *linux64
-      env: COMPILER_C=gcc-5 COMPILER_CXX=g++-5
+      env: COMPILER_C=gcc COMPILER_CXX=g++
     - os: linux
       compiler: clang
       addons: *linux64
@@ -47,25 +41,20 @@ matrix:
       compiler: clang
       osx_image: xcode7.3
       env: COMPILER_C=clang COMPILER_CXX=clang++
-    - os: osx
-      compiler: gcc
-      osx_image: xcode7.3
-      env: COMPILER_C=gcc COMPILER_CXX=g++
+  allow_failures:
+    - env: USE_ICC=ON
+    - env: USE_PGI=ON
 
 before_install:
   - cd $TRAVIS_BUILD_DIR
-  - source scripts/ci/travis_setup.sh
+  - source ci/travis_setup.sh
   - $CC --version
   - $CXX --version
 
 script:
-  - export CC=${COMPILER_C}
-  - export CXX=${COMPILER_CXX}
-  - ${CC} --version
-  - ${CXX} --version
   - cd $TRAVIS_BUILD_DIR
   - mkdir build && cd build
-  - cmake .. $CMAKE_ARGS
+  - $CMAKE_CONFIGURE cmake .. $CMAKE_ARGS
   - make -j2
   - ctest -j2 --output-on-failure
 

@@ -44,8 +44,9 @@
 
 #include "mode.h"
 
-#if defined(COMPILE_ANSI_ONLY) && defined(__APPLE__)
+#if defined(COMPILE_ANSI_ONLY) && (defined(__APPLE__) || defined(__EMSCRIPTEN__))
 /*    For build under OSX, advice from Burt Leland */
+/*    JAF: Emscripten builds also need this support!*/
 #include "ichicomp.h"    /* Needed for __isascii define */
 #endif
 

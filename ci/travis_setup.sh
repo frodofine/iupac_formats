@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Originally written for Chemfiles <https://github.com/chemfiles/chemfiles> by
-# Evan Nemerson.  For documentation, bug reports, support requests,
+# Guillaume Fraux.  For documentation, bug reports, support requests,
 # etc. please use <https://github.com/nemequ/icc-travis>.
 
 export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Debug -DINCHI_BUILD_SHARED=ON -DINCHI_BUILD_EXE=ON -DINCHI_DEMOS=ON -DINCHI_TESTING=ON -DRINCHI_TESTING=ON"
@@ -14,7 +14,7 @@ if [[ "$EMSCRIPTEN" == "ON" ]]; then
     source ./emscripten-sdk-master/emsdk_env.sh
 
     export CMAKE_CONFIGURE='emcmake'
-    export CMAKE_ARGS="-DINCHI_TESTING=ON -DRINCHI_TESTING=ON -DTEST_RUNNER=node -DCMAKE_BUILD_TYPE=Release"
+    export CMAKE_ARGS="-DINCHI_TESTING=ON -DTEST_RUNNER=node -DCMAKE_BUILD_TYPE=Release"
 
     # Install a modern cmake
     cd $HOME
@@ -30,12 +30,12 @@ fi
 
 if [[ "$VALGRIND" == "ON" ]]; then
     export CMAKE_ARGS="$CMAKE_ARGS -DTEST_RUNNER=valgrind"
-return
+fi
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     if [[ "$CC" == "gcc" ]]; then
-        export CC=gcc-5
-        export CXX=g++-5
+        export CC=gcc
+        export CXX=g++
     fi
 fi
 
@@ -50,15 +50,11 @@ if [[ "$USE_PGI" == "ON" ]]; then
     /bin/sh $TRAVIS_BUILD_DIR/ci/install-pgi.sh
     export CC=pgcc
     export CXX=pgc++
+    export CMAKE_ARGS="-DCMAKE_BUILD_TYPE=Debug -DINCHI_BUILD_SHARED=ON -DINCHI_BUILD_EXE=ON -DINCHI_DEMOS=ON -DINCHI_TESTING=ON"
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     brew update
-    if [[ "$CC" == "gcc" ]]; then
-        brew install gcc@5
-        export CC=gcc-5
-        export CXX=g++-5
-    fi
 fi
 
 if [[ "$ARCH" == "x86" ]]; then
