@@ -20,9 +20,9 @@ endif()
 function(inchi_test _name_ _args_)
     add_test(NAME ${_name_}
         COMMAND ${RUNNER_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/inchi-1
-            InChI_TestSet.sdf ${_name_}.txt ${_name_}.log
+            tests/InChI_TestSet.sdf tests/${_name_}.txt tests/${_name_}.log
             NUL -AuxNone -NoLabels ${_args_}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/tests
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 endfunction()
 
