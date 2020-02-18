@@ -24,7 +24,6 @@ clone_folder: c:\iupac
 
 build_script:
   - cd C:\iupac
-  - ls C:\Libraries\boost_1_67_0
   - mkdir build
   - cd build
   - cmake .. -DINCHI_BUILD_SHARED=ON -DINCHI_BUILD_EXE=ON -DINCHI_DEMOS=ON -DINCHI_TESTING=ON -DRINCHI_TESTING=ON

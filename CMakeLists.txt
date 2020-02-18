@@ -1,5 +1,5 @@
 project(iupac_types)
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION  2.8.12)
 
 option(INCHI_BUILD_SHARED "Build InChI shared library" OFF)
 option(INCHI_BUILD_EXE "Build inchi-1 program" OFF)
