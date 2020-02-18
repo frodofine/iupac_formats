@@ -1,42 +1,34 @@
 language: cpp
 sudo: false
+dist: xenial
 
-linux64_addons:
-    addons: &linux64
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - libboost-dev
-        - libboost-filesystem1.54-dev
-        - valgrind
+addons:
+  apt:
+    packages:
+    - libboost-dev
+    - libboost-filesystem-dev
+    - valgrind
 
 matrix:
   fast_finish: true
   include:
     - os: linux
       compiler: gcc
-      addons: *linux64
       env: COMPILER_C=gcc COMPILER_CXX=g++
     - os: linux
       compiler: clang
-      addons: *linux64
       env: COMPILER_C=clang COMPILER_CXX=clang++
     - os: linux
       compiler: gcc
       env: VALGRIND=ON
-      addons: *linux64
     - os: linux
       compiler: gcc
       env: USE_ICC=ON
-      addons: *linux64
     - os: linux
       compiler: gcc
       env: USE_PGI=ON
-      addons: *linux64
     - os: linux
       env: EMSCRIPTEN=ON
-      addons: *linux64
     - os: osx
       compiler: clang
       osx_image: xcode7.3
