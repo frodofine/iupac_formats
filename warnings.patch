@@ -51,12 +51,11 @@ diff --git a/inchi/INCHI_BASE/ichican2.c b/inchi/INCHI_BASE/ichican2.c
 index 131e069..bc1535f 100644
 --- a/inchi/INCHI_BASE/ichican2.c
 +++ b/inchi/INCHI_BASE/ichican2.c
-@@ -3893,28 +3893,23 @@ L8: /* here nu is discrete: check rho for being a bettere leaf or isomorphism */
+@@ -3893,28 +3893,22 @@ L8: /* here nu is discrete: check rho for being a bettere leaf or isomorphism */
      /*if ( !lab || qzb_rho < 0 || !QZFIX_OK(qzb_rho_fix) )*/
      if ( !lab || qzb_rho < 0 && ( !pzb_rho_fix || qzb_rho_fix > 0 ) )
          goto L6;
 -    if ( pzb_rho_fix && kLeast_rho_fix && 0 == qzb_rho_fix )
-+    
 +    /* JAF 2018 kLeast_rho_fix always evaluates to true as it is an array */
 +    if ( pzb_rho_fix && 0 == qzb_rho_fix )
      {

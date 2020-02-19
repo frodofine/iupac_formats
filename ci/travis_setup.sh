@@ -25,11 +25,27 @@ if [[ "$EMSCRIPTEN" == "ON" ]]; then
     export CC=emcc
     export CXX=em++
 
+    pushd .
+    cd $TRAVIS_BUILD_DIR
+    git apply --ignore-space-change --ignore-whitespace emscripten.patch
+    popd
+
     return
+fi
+
+if [[ "$NO_WARNINGS" == "ON" ]]; then
+    pushd .
+    cd $TRAVIS_BUILD_DIR
+    git apply --ignore-space-change --ignore-whitespace warnings.patch
+    popd
 fi
 
 if [[ "$VALGRIND" == "ON" ]]; then
     export CMAKE_ARGS="$CMAKE_ARGS -DTEST_RUNNER=valgrind"
+    pushd .
+    cd $TRAVIS_BUILD_DIR
+    git apply --ignore-space-change --ignore-whitespace memory.patch
+    popd
 fi
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
