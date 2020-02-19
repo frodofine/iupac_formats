@@ -350,7 +350,6 @@ int FixMoreHydrogenInFormula( BN_STRUCT *pBNS, BN_DATA *pBD, StrFromINChI *pStru
     }
 
     /* H(+) has been added to -O(-); check non-tautomeric atoms */
-    /* JAF 2018 unsequenced modification of neigh */
     for ( i = 0; i < num_at; i ++ ) {
         if ( !(pStruct->bMobileH? at2[i].endpoint : pStruct->endpoint[i]) && !pVA[i].cMetal &&
              at2[i].num_H + 1 == atf[i].num_H &&      /* normalization added H ??? What would happen in Fixed-H case?*/
@@ -359,7 +358,7 @@ int FixMoreHydrogenInFormula( BN_STRUCT *pBNS, BN_DATA *pBD, StrFromINChI *pStru
              at2[i].charge == -1 && atf[i].charge == 0 && /* and has no charge after preprocessing */
              at2[i].valence == 1 && at2[i].chem_bonds_valence == 1 && /* connected by a single bond */
              pVA[i].cNumValenceElectrons == 6 &&     /* atom is O, S, Se, Te */
-             (neigh=at2[i].neighbor[0], at2[neigh].chem_bonds_valence > at2[neigh].valence)
+             at2[neigh=at2[i].neighbor[0]].chem_bonds_valence > at2[neigh].valence
              /* atom's single neighbor has multiple bond(s)*/
             ) {
             /* H(+) was added to O in Y=X-O(-), where X is the only neighbor of O, X=neigh, Y=neigh2 */
@@ -3155,8 +3154,7 @@ int AddRemIsoProtonsInRestrStruct( INCHI_CLOCK *ic, CANON_GLOBALS *pCG, ICHICONS
                                         Process and save charge delta.
     -----------------------------------------------------------------------------------*/
 
-    /* JAF 2018 num_prot will always be true as it is an array */
-    for ( iComp = 0; iComp < num_components; iComp ++ ) {
+    for ( iComp = 0; iComp < num_components && num_prot; iComp ++ ) {
         bAccumulateChanges = 0;
         if ( pStruct[iComp].nLink < 0 && num_componentsR > 0 ) {
             /* check */

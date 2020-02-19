@@ -1,0 +1,35 @@
+diff --git a/inchi/INCHI_BASE/runichi4.c b/inchi/INCHI_BASE/runichi4.c
+index 0e9daeb..d666130 100644
+--- a/inchi/INCHI_BASE/runichi4.c
++++ b/inchi/INCHI_BASE/runichi4.c
+@@ -1254,14 +1254,15 @@ void FreeAllINChIArrays( PINChI2 *pINChI[INCHI_NUM],
+ 
+         num_components[k] = 0;
+ 
+-        if ( nk &&                /* added check for nk: 2013-12-15 IPl */
++        /* checking for nk == 0 causes a memory leak for RInChI - JAF 2018 */
++        if ( /*nk &&   added check for nk: 2013-12-15 IPl Removed by JAF 2018*/
+              pINChI[k] )
+         {
+             inchi_free( pINChI[k] );
+             pINChI[k] = NULL;
+         }
+ 
+-        if ( nk &&                /* added check for nk: 2013-12-15 IPl */
++        if ( /*nk &&  added check for nk: 2013-12-15 IPl Removed by JAF 2018*/
+              pINChI_Aux[k] )
+         {
+             inchi_free( pINChI_Aux[k] );
+diff --git a/rinchi/lib/inchi_generator.cpp b/rinchi/lib/inchi_generator.cpp
+index 08e0654..2255bc9 100644
+--- a/rinchi/lib/inchi_generator.cpp
++++ b/rinchi/lib/inchi_generator.cpp
+@@ -223,6 +223,8 @@ void InChIGenerator::validate_inchi(const std::string& inchi_string)
+ 						err_msg = line;
+ 				}
+ 			}
++			// JAF - This needs to be freed before the stack is unwound.
++			lib_FreeINCHI(&inchi_output);
+ 			if (err_msg.empty())
+ 				throw InChIGeneratorError("Unknown error validating InChI.");
+ 			else

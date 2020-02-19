@@ -1,0 +1,261 @@
+diff --git a/inchi/INCHI_API/demos/test_ixa/test_ixa.c b/inchi/INCHI_API/demos/test_ixa/test_ixa.c
+index c4a32e3..f741095 100644
+--- a/inchi/INCHI_API/demos/test_ixa/test_ixa.c
++++ b/inchi/INCHI_API/demos/test_ixa/test_ixa.c
+@@ -59,6 +59,7 @@ static int CheckStatus(IXA_STATUS_HANDLE hStatus, long nrecord)
+ 
+     int count = IXA_STATUS_GetCount(hStatus);
+     int index;
++    /* JAF Explicitly handle the success case */
+     for (index = 0; index < count; index++)
+     {
+         switch (IXA_STATUS_GetSeverity(hStatus, index))
+@@ -70,6 +71,8 @@ static int CheckStatus(IXA_STATUS_HANDLE hStatus, long nrecord)
+             case IXA_STATUS_WARNING:
+                 fprintf(stderr, "\nWARNING: %s : structure %-ld", IXA_STATUS_GetMessage(hStatus, index), nrecord);
+                 break;
++            default:
++                break;
+         }
+     }
+ 
+@@ -244,8 +247,9 @@ static int ReadOptions(int                     argc,
+ 
+ /*
+ Main program.
++JAF Should be int!
+ */
+-void main(int argc, const char* argv[])
++int main(int argc, const char* argv[])
+ {
+     FILE*       sdfile = NULL;
+     FILE*       outfile = NULL;
+@@ -289,7 +293,7 @@ const char *platform="Linux";
+         /* Not enough command line arguments have been provided. Output some help
+         information, then exit. */
+         print_help();
+-        return;
++        return 0;
+     }
+ 
+     /* Open input and output files. */
+@@ -464,6 +468,7 @@ cleanup:
+     IXA_INCHIBUILDER_Destroy(NULL, inchi_builder);
+     IXA_MOL_Destroy(NULL, molecule);
+     IXA_STATUS_Destroy(status);
++    return 0;
+ }
+ 
+ 
+diff --git a/inchi/INCHI_BASE/ichican2.c b/inchi/INCHI_BASE/ichican2.c
+index 131e069..bc1535f 100644
+--- a/inchi/INCHI_BASE/ichican2.c
++++ b/inchi/INCHI_BASE/ichican2.c
+@@ -3893,28 +3893,23 @@ L8: /* here nu is discrete: check rho for being a bettere leaf or isomorphism */
+     /*if ( !lab || qzb_rho < 0 || !QZFIX_OK(qzb_rho_fix) )*/
+     if ( !lab || qzb_rho < 0 && ( !pzb_rho_fix || qzb_rho_fix > 0 ) )
+         goto L6;
+-    if ( pzb_rho_fix && kLeast_rho_fix && 0 == qzb_rho_fix )
++    
++    /* JAF 2018 kLeast_rho_fix always evaluates to true as it is an array */
++    if ( pzb_rho_fix && 0 == qzb_rho_fix )
+     {
+         /* check for the rejection condition: Lambda > zb_rho_fix */
+-        if ( kLeast_rho_fix )
++        int qzb_rho_fix_alt;
++        qzb_rho_fix     = CtFullCompareLayers( kLeast_rho_fix );
++        /* for debug only */
++        qzb_rho_fix_alt =  CtFullCompare( &Lambda, pzb_rho_fix, 1, bSplitTautCompare );
++        if ( qzb_rho_fix != qzb_rho_fix_alt )
+         {
+-            int qzb_rho_fix_alt;
+-            qzb_rho_fix     = CtFullCompareLayers( kLeast_rho_fix );
+-            /* for debug only */
+-            qzb_rho_fix_alt =  CtFullCompare( &Lambda, pzb_rho_fix, 1, bSplitTautCompare );
+-            if ( qzb_rho_fix != qzb_rho_fix_alt )
+-            {
+ #if ( bRELEASE_VERSION != 1 && defined(_DEBUG) )
+-                int stop = 1;
++            int stop = 1;
+ #endif
+-                qzb_rho_fix = qzb_rho_fix_alt;
+-            }
+-            /* end debug */
+-        }
+-        else
+-        {
+-            qzb_rho_fix = CtFullCompare( &Lambda, pzb_rho_fix, 1, bSplitTautCompare );
++            qzb_rho_fix = qzb_rho_fix_alt;
+         }
++        /* end debug */
+         if ( !pzb_rho_fix_reached )
+         {
+             pzb_rho_fix_reached = !qzb_rho_fix;
+@@ -3940,25 +3935,19 @@ L8: /* here nu is discrete: check rho for being a bettere leaf or isomorphism */
+     /* !!! we should never come here if G(nu) != G(rho): CtPartCompare must be enough !!! */
+ 
+     /* if ( G(nu) > G(rho) ) goto L9; */
+-    if ( kLeast_rho )
++    /* JAF 2018: kLeast_rho will always be true as it is an array*/
++    int cur_qzb_alt;
++    qzb_rho =     CtFullCompareLayers( kLeast_rho );
++     /* for debug only */
++    cur_qzb_alt = CtFullCompare( &Lambda, pzb_rho, 0, bSplitTautCompare );
++    if ( qzb_rho != cur_qzb_alt )
+     {
+-        int cur_qzb_alt;
+-        qzb_rho =     CtFullCompareLayers( kLeast_rho );
+-        /* for debug only */
+-        cur_qzb_alt = CtFullCompare( &Lambda, pzb_rho, 0, bSplitTautCompare );
+-        if ( qzb_rho != cur_qzb_alt )
+-        {
+ #if ( bRELEASE_VERSION != 1 && defined(_DEBUG) )
+-            int stop = 1;
++        int stop = 1;
+ #endif
+-            qzb_rho = cur_qzb_alt;
+-        }
+-        /* end debug */
+-    }
+-    else
+-    {
+-        qzb_rho = CtFullCompare( &Lambda, pzb_rho, 0, bSplitTautCompare );
+-    }
++        qzb_rho = cur_qzb_alt;
++     }
++    /* end debug */
+     /* qzb_rho difference can be due to layers 1..MAX_LAYERS-1 only */
+     if ( 0 < qzb_rho )
+     {
+diff --git a/inchi/INCHI_BASE/ichirvr2.c b/inchi/INCHI_BASE/ichirvr2.c
+index 0595d60..82066f3 100644
+--- a/inchi/INCHI_BASE/ichirvr2.c
++++ b/inchi/INCHI_BASE/ichirvr2.c
+@@ -291,12 +291,13 @@ int RestoreAtomConnectionsSetStereo( StrFromINChI *pStruct, int iComponent, int
+             }
+ 
+             /* find whether it is an allene */
++            /* JAF 2018 unsequenced modification of jn and jv */
+             if ( at[n_vertex].valence == 2 &&
+                  at[n_vertex].num_H   == 0 &&
+                  bCanAtomBeMiddleAllene(at[n_vertex].elname, 0, 0) &&
+-                 at[jv = at[n_vertex].neighbor[0]].valence + at[jv].num_H == 3 &&
++                 (jv = at[n_vertex].neighbor[0], at[jv].valence + at[jv].num_H == 3) &&
+                  bCanAtomBeTerminalAllene(at[jv].elname, 0, 0)     &&
+-                 at[jn = at[n_vertex].neighbor[1]].valence + at[jn].num_H == 3 &&
++                 (jn = at[n_vertex].neighbor[1], at[jn].valence + at[jn].num_H == 3) &&
+                  bCanAtomBeTerminalAllene(at[jn].elname, 0, 0) )
+             {
+                 /* allene */
+@@ -3182,10 +3183,11 @@ int MovePlusFromS2DiaminoCarbon( BN_STRUCT *pBNS, BN_DATA *pBD, StrFromINChI *pS
+         goto exit_function;
+     }
+     /* find (NH2)C=S(+) */
++    /* JAF 2018 unsequenced modification of pvS */
+     for ( i = 0; i < num_at; i ++ ) {
+         if ( !pVA[i].cMetal && pVA[i].cNumValenceElectrons == 6 &&
+              at2[i].valence == 2 &&
+-             (pvS = pBNS->vert+i)->st_edge.cap == pvS->st_edge.flow &&
++             (pvS = pBNS->vert+i, pvS->st_edge.cap == pvS->st_edge.flow) &&
+              0 <= (ePlusS = pVA[i].nCPlusGroupEdge-1) && !(pePlusS=pBNS->edge+ePlusS)->flow && /* S(+) */
+              (pe1=pBNS->edge + pvS->iedge[0])->flow +
+              (pe2=pBNS->edge + pvS->iedge[1])->flow == 1 /* -S(+)= */ &&
+diff --git a/inchi/INCHI_BASE/ichirvr4.c b/inchi/INCHI_BASE/ichirvr4.c
+index 11eaa64..579bc34 100644
+--- a/inchi/INCHI_BASE/ichirvr4.c
++++ b/inchi/INCHI_BASE/ichirvr4.c
+@@ -350,6 +350,7 @@ int FixMoreHydrogenInFormula( BN_STRUCT *pBNS, BN_DATA *pBD, StrFromINChI *pStru
+     }
+ 
+     /* H(+) has been added to -O(-); check non-tautomeric atoms */
++    /* JAF 2018 unsequenced modification of neigh */
+     for ( i = 0; i < num_at; i ++ ) {
+         if ( !(pStruct->bMobileH? at2[i].endpoint : pStruct->endpoint[i]) && !pVA[i].cMetal &&
+              at2[i].num_H + 1 == atf[i].num_H &&      /* normalization added H ??? What would happen in Fixed-H case?*/
+@@ -358,7 +359,7 @@ int FixMoreHydrogenInFormula( BN_STRUCT *pBNS, BN_DATA *pBD, StrFromINChI *pStru
+              at2[i].charge == -1 && atf[i].charge == 0 && /* and has no charge after preprocessing */
+              at2[i].valence == 1 && at2[i].chem_bonds_valence == 1 && /* connected by a single bond */
+              pVA[i].cNumValenceElectrons == 6 &&     /* atom is O, S, Se, Te */
+-             at2[neigh=at2[i].neighbor[0]].chem_bonds_valence > at2[neigh].valence
++             (neigh=at2[i].neighbor[0], at2[neigh].chem_bonds_valence > at2[neigh].valence)
+              /* atom's single neighbor has multiple bond(s)*/
+             ) {
+             /* H(+) was added to O in Y=X-O(-), where X is the only neighbor of O, X=neigh, Y=neigh2 */
+@@ -3154,7 +3155,8 @@ int AddRemIsoProtonsInRestrStruct( INCHI_CLOCK *ic, CANON_GLOBALS *pCG, ICHICONS
+                                         Process and save charge delta.
+     -----------------------------------------------------------------------------------*/
+ 
+-    for ( iComp = 0; iComp < num_components && num_prot; iComp ++ ) {
++    /* JAF 2018 num_prot will always be true as it is an array */
++    for ( iComp = 0; iComp < num_components; iComp ++ ) {
+         bAccumulateChanges = 0;
+         if ( pStruct[iComp].nLink < 0 && num_componentsR > 0 ) {
+             /* check */
+diff --git a/inchi/INCHI_BASE/ichitaut.c b/inchi/INCHI_BASE/ichitaut.c
+index 2979028..4531d14 100644
+--- a/inchi/INCHI_BASE/ichitaut.c
++++ b/inchi/INCHI_BASE/ichitaut.c
+@@ -3577,7 +3577,8 @@ int MarkTautomerGroups( CANON_GLOBALS *pCG, inp_ATOM *at, int num_atoms, T_GROUP
+         AT_RANK *nDfsPathPos = (AT_RANK  *)inchi_calloc( num_atoms, sizeof(nDfsPathPos[0]) );
+         DFS_PATH DfsPath[MAX_ALT_PATH_LEN];
+         int      ret;
+-        if ( !nDfsPathPos || !DfsPath ) {
++        /* DfsPath will always be true because it is an array */
++        if ( !nDfsPathPos ) {
+             tot_changes = CT_OUT_OF_RAM;  /*   <BRKPT> */
+             goto free_memory;
+         }
+diff --git a/inchi/INCHI_BASE/readinch.c b/inchi/INCHI_BASE/readinch.c
+index b2cdc27..61c530a 100644
+--- a/inchi/INCHI_BASE/readinch.c
++++ b/inchi/INCHI_BASE/readinch.c
+@@ -623,7 +623,8 @@ ReadINCHI_CtlData ir;
+         else if ( !memcmp( szLine, sStructHdrPlnAuxStart, lenStructHdrPlnAuxStart) )
+         {
+             /* Reject to deal with polymers for now */
+-            if ( szLine && strstr(szLine, "/Z:"))
++            /* JAF szLine will always be true because it is an array */
++            if ( strstr(szLine, "/Z:"))
+             {
+                 *err      = INCHI_INP_ERROR_ERR;
+                 num_atoms = INCHI_INP_ERROR_RET;
+diff --git a/inchi/INCHI_BASE/runichi2.c b/inchi/INCHI_BASE/runichi2.c
+index f76adbe..98e688d 100644
+--- a/inchi/INCHI_BASE/runichi2.c
++++ b/inchi/INCHI_BASE/runichi2.c
+@@ -479,8 +479,8 @@ int ReadTheStructure( struct tagINCHI_CLOCK *ic,
+             {
+                 InpAtomFlags = FLAG_INP_AT_NONCHIRAL; /* forced by the user */
+             }
+-
+-            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags && FLAG_INP_AT_NONCHIRAL) )
++            /* JAF FLAG_INP_AT_NONCHIRAL is always true (a constant)       |---- && Typo?   */
++            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags & FLAG_INP_AT_NONCHIRAL) )
+             {
+                 InpAtomFlags &= ~FLAG_INP_AT_NONCHIRAL;
+             }
+@@ -608,7 +608,8 @@ int ReadTheStructure( struct tagINCHI_CLOCK *ic,
+             {
+                 InpAtomFlags = FLAG_INP_AT_NONCHIRAL; /* forced by the user */
+             }
+-            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags && FLAG_INP_AT_NONCHIRAL) )
++            /* JAF FLAG_INP_AT_NONCHIRAL is always true                    |----- && Typo? */
++            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags & FLAG_INP_AT_NONCHIRAL) )
+             {
+                 InpAtomFlags &= ~FLAG_INP_AT_NONCHIRAL;
+             }
+diff --git a/inchi/INCHI_EXE/ichimain.c b/inchi/INCHI_EXE/ichimain.c
+index 2d71a02..0662390 100644
+--- a/inchi/INCHI_EXE/ichimain.c
++++ b/inchi/INCHI_EXE/ichimain.c
+@@ -588,8 +588,8 @@ repeat:
+     inchi_ios_init(pout, inchi_ios_type, NULL);
+     inchi_ios_init(plog, inchi_ios_type, stdout);
+     inchi_ios_init(pprb, inchi_ios_type, NULL);
+-    memset( strbuf, 0, sizeof(strbuf) );
+-
++    /* JAF sizeof(strbuf) will always be constant because strbuf is a pointer */
++    memset( strbuf, 0, sizeof(INCHI_IOSTREAM_STRING) );
+ 
+ 
+     if ( argc == 1 || argc==2 && ( argv[1] [0]==INCHI_OPTION_PREFX ) &&
