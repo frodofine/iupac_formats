@@ -223,8 +223,6 @@ void InChIGenerator::validate_inchi(const std::string& inchi_string)
 						err_msg = line;
 				}
 			}
-			// JAF - This needs to be freed before the stack is unwound.
-			lib_FreeINCHI(&inchi_output);
 			if (err_msg.empty())
 				throw InChIGeneratorError("Unknown error validating InChI.");
 			else

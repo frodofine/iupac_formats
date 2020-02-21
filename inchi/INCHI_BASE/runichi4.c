@@ -63,7 +63,7 @@
 #include "inchi_api.h"
 #include "readinch.h"
 #ifdef TARGET_LIB_FOR_WINCHI
-#include "ichi_lib.h"
+#include "../../../IChI_lib/src/ichi_lib.h"
 #include "inchi_api.h"
 #else
 #include "inchi_gui.h"
@@ -1254,15 +1254,14 @@ void FreeAllINChIArrays( PINChI2 *pINChI[INCHI_NUM],
 
         num_components[k] = 0;
 
-        /* checking for nk == 0 causes a memory leak for RInChI - JAF 2018 */
-        if ( /*nk &&   added check for nk: 2013-12-15 IPl Removed by JAF 2018*/
+        if ( nk &&                /* added check for nk: 2013-12-15 IPl */
              pINChI[k] )
         {
             inchi_free( pINChI[k] );
             pINChI[k] = NULL;
         }
 
-        if ( /*nk &&  added check for nk: 2013-12-15 IPl Removed by JAF 2018*/
+        if ( nk &&                /* added check for nk: 2013-12-15 IPl */
              pINChI_Aux[k] )
         {
             inchi_free( pINChI_Aux[k] );

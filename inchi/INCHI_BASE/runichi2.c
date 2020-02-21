@@ -62,7 +62,7 @@
 #include "inchi_api.h"
 #include "readinch.h"
 #ifdef TARGET_LIB_FOR_WINCHI
-#include "ichi_lib.h"
+#include "../../../IChI_lib/src/ichi_lib.h"
 #include "inchi_api.h"
 #else
 #include "inchi_gui.h"
@@ -479,8 +479,8 @@ int ReadTheStructure( struct tagINCHI_CLOCK *ic,
             {
                 InpAtomFlags = FLAG_INP_AT_NONCHIRAL; /* forced by the user */
             }
-            /* JAF FLAG_INP_AT_NONCHIRAL is always true (a constant)       |---- && Typo?   */
-            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags & FLAG_INP_AT_NONCHIRAL) )
+
+            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags && FLAG_INP_AT_NONCHIRAL) )
             {
                 InpAtomFlags &= ~FLAG_INP_AT_NONCHIRAL;
             }
@@ -608,8 +608,7 @@ int ReadTheStructure( struct tagINCHI_CLOCK *ic,
             {
                 InpAtomFlags = FLAG_INP_AT_NONCHIRAL; /* forced by the user */
             }
-            /* JAF FLAG_INP_AT_NONCHIRAL is always true                    |----- && Typo? */
-            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags & FLAG_INP_AT_NONCHIRAL) )
+            else if ( (InpAtomFlags & FLAG_INP_AT_CHIRAL) && (InpAtomFlags && FLAG_INP_AT_NONCHIRAL) )
             {
                 InpAtomFlags &= ~FLAG_INP_AT_NONCHIRAL;
             }

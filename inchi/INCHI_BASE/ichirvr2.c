@@ -291,13 +291,12 @@ int RestoreAtomConnectionsSetStereo( StrFromINChI *pStruct, int iComponent, int 
             }
 
             /* find whether it is an allene */
-            /* JAF 2018 unsequenced modification of jn and jv */
             if ( at[n_vertex].valence == 2 &&
                  at[n_vertex].num_H   == 0 &&
                  bCanAtomBeMiddleAllene(at[n_vertex].elname, 0, 0) &&
-                 (jv = at[n_vertex].neighbor[0], at[jv].valence + at[jv].num_H == 3) &&
+                 at[jv = at[n_vertex].neighbor[0]].valence + at[jv].num_H == 3 &&
                  bCanAtomBeTerminalAllene(at[jv].elname, 0, 0)     &&
-                 (jn = at[n_vertex].neighbor[1], at[jn].valence + at[jn].num_H == 3) &&
+                 at[jn = at[n_vertex].neighbor[1]].valence + at[jn].num_H == 3 &&
                  bCanAtomBeTerminalAllene(at[jn].elname, 0, 0) )
             {
                 /* allene */
@@ -3183,11 +3182,10 @@ int MovePlusFromS2DiaminoCarbon( BN_STRUCT *pBNS, BN_DATA *pBD, StrFromINChI *pS
         goto exit_function;
     }
     /* find (NH2)C=S(+) */
-    /* JAF 2018 unsequenced modification of pvS */
     for ( i = 0; i < num_at; i ++ ) {
         if ( !pVA[i].cMetal && pVA[i].cNumValenceElectrons == 6 &&
              at2[i].valence == 2 &&
-             (pvS = pBNS->vert+i, pvS->st_edge.cap == pvS->st_edge.flow) &&
+             (pvS = pBNS->vert+i)->st_edge.cap == pvS->st_edge.flow &&
              0 <= (ePlusS = pVA[i].nCPlusGroupEdge-1) && !(pePlusS=pBNS->edge+ePlusS)->flow && /* S(+) */
              (pe1=pBNS->edge + pvS->iedge[0])->flow +
              (pe2=pBNS->edge + pvS->iedge[1])->flow == 1 /* -S(+)= */ &&

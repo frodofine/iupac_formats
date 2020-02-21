@@ -59,7 +59,6 @@ static int CheckStatus(IXA_STATUS_HANDLE hStatus, long nrecord)
 
     int count = IXA_STATUS_GetCount(hStatus);
     int index;
-    /* JAF Explicitly handle the success case */
     for (index = 0; index < count; index++)
     {
         switch (IXA_STATUS_GetSeverity(hStatus, index))
@@ -70,8 +69,6 @@ static int CheckStatus(IXA_STATUS_HANDLE hStatus, long nrecord)
                 break;
             case IXA_STATUS_WARNING:
                 fprintf(stderr, "\nWARNING: %s : structure %-ld", IXA_STATUS_GetMessage(hStatus, index), nrecord);
-                break;
-            default:
                 break;
         }
     }
@@ -247,9 +244,8 @@ static int ReadOptions(int                     argc,
 
 /*
 Main program.
-JAF Should be int!
 */
-int main(int argc, const char* argv[])
+void main(int argc, const char* argv[])
 {
     FILE*       sdfile = NULL;
     FILE*       outfile = NULL;
@@ -293,7 +289,7 @@ const char *platform="Linux";
         /* Not enough command line arguments have been provided. Output some help
         information, then exit. */
         print_help();
-        return 0;
+        return;
     }
 
     /* Open input and output files. */
@@ -468,7 +464,6 @@ cleanup:
     IXA_INCHIBUILDER_Destroy(NULL, inchi_builder);
     IXA_MOL_Destroy(NULL, molecule);
     IXA_STATUS_Destroy(status);
-    return 0;
 }
 
 

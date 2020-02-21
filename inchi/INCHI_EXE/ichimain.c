@@ -588,8 +588,8 @@ repeat:
     inchi_ios_init(pout, inchi_ios_type, NULL);
     inchi_ios_init(plog, inchi_ios_type, stdout);
     inchi_ios_init(pprb, inchi_ios_type, NULL);
-    /* JAF sizeof(strbuf) will always be constant because strbuf is a pointer */
-    memset( strbuf, 0, sizeof(INCHI_IOSTREAM_STRING) );
+    memset( strbuf, 0, sizeof(strbuf) );
+
 
 
     if ( argc == 1 || argc==2 && ( argv[1] [0]==INCHI_OPTION_PREFX ) &&

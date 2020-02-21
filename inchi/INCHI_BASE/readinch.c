@@ -623,8 +623,7 @@ ReadINCHI_CtlData ir;
         else if ( !memcmp( szLine, sStructHdrPlnAuxStart, lenStructHdrPlnAuxStart) )
         {
             /* Reject to deal with polymers for now */
-            /* JAF szLine will always be true because it is an array */
-            if ( strstr(szLine, "/Z:"))
+            if ( szLine && strstr(szLine, "/Z:"))
             {
                 *err      = INCHI_INP_ERROR_ERR;
                 num_atoms = INCHI_INP_ERROR_RET;

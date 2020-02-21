@@ -1,0 +1,29 @@
+diff --git a/inchi/INCHI_BASE/util.c b/inchi/INCHI_BASE/util.c
+index ccb8853..4366637 100644
+--- a/inchi/INCHI_BASE/util.c
++++ b/inchi/INCHI_BASE/util.c
+@@ -44,8 +44,9 @@
+ 
+ #include "mode.h"
+ 
+-#if defined(COMPILE_ANSI_ONLY) && defined(__APPLE__)
++#if defined(COMPILE_ANSI_ONLY) && (defined(__APPLE__) || defined(__EMSCRIPTEN__))
+ /*    For build under OSX, advice from Burt Leland */
++/*    JAF: Emscripten builds also need this support!*/
+ #include "ichicomp.h"    /* Needed for __isascii define */
+ #endif
+ 
+diff --git a/rinchi/lib/rinchi_platform.h b/rinchi/lib/rinchi_platform.h
+index 7d0d89d..81b04fb 100644
+--- a/rinchi/lib/rinchi_platform.h
++++ b/rinchi/lib/rinchi_platform.h
+@@ -71,6 +71,9 @@
+ 	// #define ON_APPLE
+ 	#define ON_LINUX
+ 	const char DIR_SEPARATOR = '/';
++#elif defined(__EMSCRIPTEN__)
++	#define ON_LINUX
++	const char DIR_SEPARATOR = '/';
+ #else
+ 	#error "unsupported platform"
+ #endif
