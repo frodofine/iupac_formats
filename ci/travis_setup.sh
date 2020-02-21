@@ -33,7 +33,8 @@ if [[ "$EMSCRIPTEN" == "ON" ]]; then
     return
 fi
 
-if [[ "$NO_WARNINGS" == "ON" ]]; then
+if [[ "$DO_NOT_SUPPRESS_WARNINGS" == "ON" ]]; then
+    export CMAKE_ARGS="$CMAKE_ARGS -DSUPPRESS_WARNINGS=OFF"
     pushd .
     cd $TRAVIS_BUILD_DIR
     git apply --ignore-space-change --ignore-whitespace warnings.patch

@@ -69,10 +69,6 @@ add_library(InChI_objects OBJECT
 target_include_directories(InChI_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 target_compile_definitions(InChI_objects PUBLIC TARGET_API_LIB)
 
-if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set_target_properties(InChI_objects PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses -Wno-comment")
-endif()
-
 if (${INCHI_BUILD_EXE} OR ${INCHI_TESTING})
 
     add_executable(inchi-1
@@ -86,10 +82,6 @@ if (${INCHI_BUILD_EXE} OR ${INCHI_TESTING})
 
     if (NOT MSVC)
         target_link_libraries(inchi-1 m)
-    endif()
-
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(inchi-1 PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses -Wno-comment")
     endif()
 endif()
 
@@ -112,10 +104,6 @@ if (${INCHI_BUILD_SHARED} OR (${INCHI_DEMOS} OR ${RINCHI_TESTING}))
     target_compile_definitions(inchi PUBLIC BUILD_LINK_AS_DLL TARGET_API_LIB)
     target_compile_definitions(inchi PRIVATE _USRDLL)
     target_include_directories(inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
-
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(inchi PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses -Wno-comment")
-    endif()
 endif()
 
 if (${INCHI_DEMOS})
@@ -139,11 +127,6 @@ if (${INCHI_DEMOS})
     endif()
     target_compile_definitions(test_ixa PUBLIC TARGET_EXE_USING_API)
     target_include_directories(test_ixa PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
-
-    if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-        set_target_properties(mol2inchi PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses -Wno-comment")
-        set_target_properties(test_ixa PROPERTIES COMPILE_FLAGS "-Wno-parentheses -Wno-logical-op-parentheses -Wno-comment")
-    endif()
 endif()
 
 if (${INCHI_TESTING})

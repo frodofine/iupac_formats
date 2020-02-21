@@ -1,5 +1,5 @@
 language: cpp
-sudo: false
+os: linux
 dist: xenial
 
 addons:
@@ -9,27 +9,38 @@ addons:
     - libboost-filesystem-dev
     - valgrind
 
-matrix:
+jobs:
   fast_finish: true
   include:
-    - os: linux
+    - name: linux gcc
+      os: linux
       compiler: gcc
       env: COMPILER_C=gcc COMPILER_CXX=g++
-    - os: linux
+    - name: linux clang
+      os: linux
       compiler: clang
       env: COMPILER_C=clang COMPILER_CXX=clang++
-    - os: linux
+    - name: linux clang with warnings addressed
+      os: linux
+      compiler: clang
+      env: COMPILER_C=clang COMPILER_CXX=clang++ DO_NOT_SUPPRESS_WARNINGS=ON
+    - name: linux valgrind
+      os: linux
       compiler: gcc
       env: VALGRIND=ON
-    - os: linux
+    - name: linux icc
+      os: linux
       compiler: gcc
       env: USE_ICC=ON
-    - os: linux
+    - name: linux pgi
+      os: linux
       compiler: gcc
       env: USE_PGI=ON
-    - os: linux
+    - name: emscripten
+      os: linux
       env: EMSCRIPTEN=ON
-    - os: osx
+    - name: osx clang
+      os: osx
       compiler: clang
       osx_image: xcode7.3
       env: COMPILER_C=clang COMPILER_CXX=clang++
