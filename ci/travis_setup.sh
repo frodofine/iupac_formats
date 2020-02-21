@@ -56,13 +56,6 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     fi
 fi
 
-if [[ "$USE_ICC" == "ON" ]]; then
-    /bin/sh $TRAVIS_BUILD_DIR/ci/install-icc.sh
-    source ~/.bashrc
-    export CC=icc
-    export CXX=icpc
-fi
-
 if [[ "$USE_PGI" == "ON" ]]; then
     /bin/sh $TRAVIS_BUILD_DIR/ci/install-pgi.sh
     export CC=pgcc

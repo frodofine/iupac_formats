@@ -28,24 +28,19 @@ jobs:
       os: linux
       compiler: gcc
       env: VALGRIND=ON
-    - name: linux icc
-      os: linux
-      compiler: gcc
-      env: USE_ICC=ON
-    - name: linux pgi
+    - name: pgi
       os: linux
       compiler: gcc
       env: USE_PGI=ON
     - name: emscripten
       os: linux
       env: EMSCRIPTEN=ON
-    - name: osx clang
+    - name: osx
       os: osx
       compiler: clang
       osx_image: xcode7.3
       env: COMPILER_C=clang COMPILER_CXX=clang++
   allow_failures:
-    - env: USE_ICC=ON
     - env: USE_PGI=ON
 
 before_install:
