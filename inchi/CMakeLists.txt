@@ -67,6 +67,7 @@ add_library(InChI_objects OBJECT
 )
 
 target_include_directories(InChI_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
+suppress_warnings(InChI_objects "C")
 target_compile_definitions(InChI_objects PUBLIC TARGET_API_LIB)
 
 if (${INCHI_BUILD_EXE} OR ${INCHI_TESTING})
@@ -78,6 +79,7 @@ if (${INCHI_BUILD_EXE} OR ${INCHI_TESTING})
     )
 
     target_include_directories(inchi-1 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
+    suppress_warnings(inchi-1 "C")
     target_compile_definitions(inchi-1 PUBLIC TARGET_EXE_STANDALONE COMPILE_ANSI_ONLY)
 
     if (NOT MSVC)
@@ -103,18 +105,28 @@ if (${INCHI_BUILD_SHARED} OR (${INCHI_DEMOS} OR ${RINCHI_TESTING}))
     endif()
     target_compile_definitions(inchi PUBLIC BUILD_LINK_AS_DLL TARGET_API_LIB)
     target_compile_definitions(inchi PRIVATE _USRDLL)
+    suppress_warnings(inchi "C")
     target_include_directories(inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 endif()
 
 if (${INCHI_DEMOS})
-    add_executable(mol2inchi
-        INCHI_API/demos/mol2inchi/mol2inchi.c
-        INCHI_API/demos/mol2inchi/moreutil.c
-    )
+    find_package(OpenMP QUIET)
 
-    target_link_libraries(mol2inchi inchi)
-    target_compile_definitions(mol2inchi PUBLIC TARGET_EXE_USING_API)
-    target_include_directories(mol2inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
+    if (OPENMP_FOUND)
+        add_executable(mol2inchi
+            INCHI_API/demos/mol2inchi/mol2inchi.c
+            INCHI_API/demos/mol2inchi/moreutil.c
+        )
+
+        target_link_libraries(mol2inchi inchi)
+        target_compile_definitions(mol2inchi PUBLIC TARGET_EXE_USING_API)
+    
+        target_link_libraries(mol2inchi "${OpenMP_C_FLAGS}")
+        target_compile_options(mol2inchi PUBLIC "${OpenMP_C_FLAGS}")
+
+        suppress_warnings(mol2inchi "C")
+        target_include_directories(mol2inchi PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
+    endif()
 
     add_executable(test_ixa
         INCHI_API/demos/test_ixa/test_ixa.c
@@ -126,6 +138,7 @@ if (${INCHI_DEMOS})
         target_link_libraries(test_ixa inchi m)
     endif()
     target_compile_definitions(test_ixa PUBLIC TARGET_EXE_USING_API)
+    suppress_warnings(test_ixa "C")
     target_include_directories(test_ixa PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/INCHI_BASE/)
 endif()
 
