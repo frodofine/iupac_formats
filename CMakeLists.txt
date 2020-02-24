@@ -17,7 +17,12 @@ if (${INCHI_TESTING} OR ${RINCHI_TESTING})
     enable_testing()
 endif()
 
-include(CompilerFlags)
+if (POLICY CMP0063)
+    # Use of `<LANG>_VISIBILITY_PRESET` in OBJECT libraries
+    cmake_policy(SET CMP0063 NEW)
+endif()
+
+include(SuppressWarningsInChI)
 
 add_subdirectory(inchi)
 add_subdirectory(rinchi)
